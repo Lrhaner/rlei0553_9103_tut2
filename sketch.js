@@ -487,70 +487,90 @@ let allRectsCoords = [
 ];
 
 let allRectsArray = [];
+let alphaValue = 0; 
+let increasing = true; // Check if the transparency value is increasing
 
 class rectangleManager {
   constructor(x, y, w, h, colour) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    this.colour = colour
+    this.x = x; 
+    this.y = y; 
+    this.w = w; 
+    this.h = h; 
+    this.colour = colour; 
   }
 
   display() {
-    push();
-    fill(this.colour);
-    rect(this.drawX, this.drawY, this.drawWidth, this.drawHeight);
-    pop();
+    push(); 
+    let col = color(this.colour); // Get the color of the rectangle
+    // If the color is orange or yellow, set the transparency
+    if (this.colour === "rgb(244, 179, 5)" || this.colour === "rgb(205, 210, 106)") {
+      col.setAlpha(alphaValue); 
+    }
+    fill(col); 
+    rect(this.drawX, this.drawY, this.drawWidth, this.drawHeight); 
+    pop(); 
   }
 
   updateColour(colour) {
-    this.colour = colour;
+    this.colour = colour; 
   }
 
-  calculateDrawSize(widthScale, heightScale){
-    this.drawX = this.x * widthScale;
-    this.drawY = this.y * heightScale;
-    this.drawWidth = this.w * widthScale;
-    this.drawHeight = this.h * heightScale;
+  calculateDrawSize(widthScale, heightScale) {
+    this.drawX = this.x * widthScale; 
+    this.drawY = this.y * heightScale; 
+    this.drawWidth = this.w * widthScale; 
+    this.drawHeight = this.h * heightScale; 
   }
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  // Create a canvas with the size of the window's width and height
 
   for (let i = 0; i < allRectsCoords.length; i++) {
     let newRect = new rectangleManager(allRectsCoords[i].x, allRectsCoords[i].y, allRectsCoords[i].w, allRectsCoords[i].h, allRectsCoords[i].colour);
     allRectsArray.push(newRect);
   }
 
-  resizedRectangles();
+  resizedRectangles(); 
 
+  // Set the interval to change the transparency value
+  setInterval(updateAlphaValue, 1); 
+  // Adjust the interval time as needed, now set to 1ms
 }
 
 function draw() {
-  background(30, 47, 97);
-  noStroke();
+  background(30, 47, 97); 
+  noStroke(); 
 
   for (let i = 0; i < allRectsArray.length; i++) {
     allRectsArray[i].display();
   }
 }
 
-function mousePressed() {
-  // for (let i = 0; i < allRectsArray.length; i++) {
-  //   allRectsArray[i].updateColour(color([random(0, 255), random(0, 255), random(0, 255)]));
-  // }
+function updateAlphaValue() {
+  // Update the transparency value according to the increasing flag
+  if (increasing) {
+    alphaValue += 1; // Increase the transparency value
+    if (alphaValue >= 255) {
+      increasing = false; 
+      // Reverse direction when transparency reaches maximum value
+    }
+  } else {
+    alphaValue -= 1; // Reduce the transparency value
+    if (alphaValue <= 0) {
+      increasing = true; // Reverse direction when transparency reaches minimum value
+    }
+  }
 }
 
-function windowResized(){
-  resizeCanvas(windowWidth, windowHeight);
-  resizedRectangles();
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight); 
+  resizedRectangles(); 
 }
 
-function resizedRectangles(){
+function resizedRectangles() {
   for (let i = 0; i < allRectsArray.length; i++) {
     allRectsArray[i].calculateDrawSize(windowWidth, windowHeight);
   }
-
 }
