@@ -533,6 +533,8 @@ function setup() {
   }
 
   resizedRectangles(); 
+  // Add event listener for mouse clicks
+  window.addEventListener('click', changeColoursOnClick);
 
   // Set the interval to change the transparency value
   setInterval(updateAlphaValue, 1); 
@@ -561,6 +563,16 @@ function updateAlphaValue() {
     if (alphaValue <= 0) {
       increasing = true; // Reverse direction when transparency reaches minimum value
     }
+  }
+}
+
+function changeColoursOnClick() {
+  // Loop through all rectangles and change their colors
+  for (let i = 0; i < allRectsArray.length; i++) {
+    // Randomly generate new colors
+    let newColour = color(random(0, 255), random(0, 255), random(0, 255));
+    // Update the rectangle color
+    allRectsArray[i].updateColour(newColour);
   }
 }
 
